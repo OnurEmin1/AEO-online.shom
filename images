@@ -1,0 +1,10 @@
+<script>start("c:\\Users\\User\\Desktop\\novi visual studio cod\\Biznis adin\\images\\");</script>
+<script>onHasParentDirectory();</script>
+<script>addRow("camera.jpg","camera.jpg",0,9739,"9.5 kB",1747859006,"5/21/25, 10:23:26 PM");</script>
+<script>addRow("moonball1.jpg","moonball1.jpg",0,14049,"13.7 kB",1747858056,"5/21/25, 10:07:36 PM");</script>
+<script>addRow("moonball2.jpg","moonball2.jpg",0,6002,"5.9 kB",1747858055,"5/21/25, 10:07:35 PM");</script>
+<script>addRow("naušnice.png","nau%C5%A1nice.png",0,925270,"904 kB",1747906312,"5/22/25, 11:31:52 AM");</script>
+<script>addRow("parfem.png","parfem.png",0,1107873,"1.1 MB",1747907281,"5/22/25, 11:48:01 AM");</script>
+<script>addRow("tape.jpg","tape.jpg",0,6198,"6.1 kB",1747859318,"5/21/25, 10:28:38 PM");</script>
+<script>addRow("torba.png","torba.png",0,612334,"598 kB",1747906718,"5/22/25, 11:38:38 AM");</script>
+<script>addRow("zvučnik.png","zvu%C4%8Dnik.png",0,674013,"658 kB",1747907472,"5/22/25, 11:51:12 AM");</script>

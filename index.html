@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8">
+  <title>AEO-online.shop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      font-size: 18px;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(120deg, #f3f3f3, #fff5e1);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .sun {
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle at center, #ffd000, #ff8c00);
+      border-radius: 50%;
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      box-shadow: 0 0 120px #ffd000;
+      z-index: 0;
+    }
+
+    .navbar {
+      background-color: #333;
+      color: white;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .navbar .center-logo {
+      font-size: 36px;
+      font-weight: 700;
+      color: #ffd700;
+      text-shadow: 1px 1px 2px black;
+    }
+
+    .shop-container, .cart-container {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 50px 30px;
+      gap: 35px;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card, .cart-item {
+      width: 260px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      padding: 25px;
+      transition: transform 0.2s ease;
+      text-align: center;
+    }
+
+    .card:hover {
+      transform: scale(1.06);
+    }
+
+    .card img {
+      width: 100%;
+      height: 160px;
+      border-radius: 10px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 35px;
+      border-radius: 12px;
+      width: 350px;
+      position: relative;
+      box-shadow: 0 0 30px rgba(0,0,0,0.3);
+    }
+
+    .modal-content img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .close {
+      position: absolute;
+      top: 10px; right: 15px;
+      cursor: pointer;
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    .cart-count {
+      background: crimson;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 50%;
+      font-size: 15px;
+      margin-left: 8px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    button {
+      background-color: #ff7f50;
+      border: none;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #ff5c2d;
+    }
+
+    .total {
+      width: 100%;
+      text-align: center;
+      font-size: 20px;
+      margin: 30px 0;
+      font-weight: bold;
+    }
+
+    .remove-btn {
+      background-color: #e63946;
+    }
+
+    .checkout-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin: 50px auto;
+      max-width: 400px;
+    }
+
+    .checkout-form input {
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .checkout-form button {
+      background-color: #4caf50;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sun"></div>
+
+  <!-- Navigacija -->
+  <div class="navbar">
+    <a onclick="showHome()">🏠 Početna</a>
+    <div class="center-logo">AEO-online.shop</div>
+    <a onclick="showCart()">🛒 Korpa <span id="cart-count" class="cart-count">0</span></a>
+  </div>
+
+  <!-- Shop -->
+  <div class="shop-container" id="shop"></div>
+
+  <!-- Korpa -->
+  <div class="cart-container hidden" id="cart">
+    <h2>Vaša Korpa</h2>
+  </div>
+
+  <!-- Ukupna cijena -->
+  <div class="total hidden" id="totalPrice">Ukupno: 0 KM</div>
+
+  <!-- Modal -->
+  <div class="modal" id="productModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <img id="modalImage" src="" alt="Proizvod">
+      <h2 id="modalTitle"></h2>
+      <p id="modalDescription"></p>
+      <p><strong>Cijena:</strong> <span id="modalPrice"></span> KM</p>
+      <button onclick="addToCart()">Dodaj u korpu</button>
+    </div>
+  </div>
+
+  <!-- Checkout forma -->
+  <div class="checkout-form hidden" id="checkoutForm">
+    <h2>Unesite podatke za narudžbu</h2>
+    <input type="text" id="address" placeholder="Adresa dostave" required>
+    <input type="text" id="phone" placeholder="Broj telefona" required>
+    <input type="text" id="cardNumber" placeholder="Broj kartice" required>
+    <input type="text" id="expiryDate" placeholder="Datum isteka (MM/YY)" required>
+    <input type="text" id="cvv" placeholder="CVV" required>
+    <button onclick="processOrder()">Potvrdi narudžbu</button>
+  </div>
+
+  <script>
+    const products = [
+  { id: 1, name: "Moon Ball", price: 2, description: "Ultra-elastične Moon lopte.", image: "images/moonball1.jpg" },
+  { id: 2, name: "Camera", price: 7, description: "Kamera Wifi Mini.", image: "images/camera.jpg" },
+  { id: 3, name: "Tape traka", price: 3, description: "3 komada Elastične Samoljepljive.", image: "images/tape.jpg" },
+  { id: 4, name: "Jedan par naušnica", price: 1, description: "1 par modernih naušnica u obliku morske zvijezde, minđuše od legure cinka inspirisane okeanom, nakit za svakodnevno nošenje", image: "images/naušnice.png" },
+  { id: 5, name: "Torba", price: 19, description: "Siva PU torba velike zapremine – moderna i svestrana torba za rame s podesivim kaiševima, rajsferšlus zatvaranjem i postavom od poliestera.", image: "images/torba.png" },
+  { id: 6, name: "Mini prijenosni punjivi raspršivač parfema", price: 1, description: "Mini prijenosni punjivi raspršivač parfema – aluminijska bočica s raspršivačem za putovanja, više boja, bez mirisa (bez mjehurića), punjiva bočica za parfem", image: "images/parfem.png" },
+  { id: 7, name: "Bluetooth Zvučnik", price: 16, description: "Prijenosni zvučnik sa odličnim bassom i dugim trajanjem baterije.", image: "images/zvučnik.png" },
+  { id: 8, name: "LED Lampa", price: 5, description: "Savitljiva stolna LED lampa idealna za učenje i rad.", image: "images/lampa.jpg" },
+  { id: 9, name: "Bežični Punjač", price: 9, description: "Brzi Qi punjač kompatibilan s većinom pametnih telefona.", image: "images/punjac.jpg" },
+  { id: 10, name: "Naočale za ekran", price: 6, description: "Anti-blue light naočale za zaštitu očiju tokom rada na računaru.", image: "images/naocale.jpg" },
+  { id: 11, name: "Masažer za vrat", price: 20, description: "Električni masažer za opuštanje vrata i ramena.", image: "images/masazer.jpg" },
+  { id: 12, name: "USB Ventilator", price: 4, description: "Mini ventilator na USB pogon – osvježenje bilo gdje.", image: "images/ventilator.jpg" },
+  { id: 13, name: "Putna četkica", price: 2, description: "Sklopiva putna četkica za zube sa zaštitnom kutijom.", image: "images/cetkica.jpg" },
+  { id: 14, name: "Organizator kablova", price: 3, description: "Set od 5 samoljepljivih držača za kablove.", image: "images/kablovi.jpg" },
+  { id: 15, name: "Notes sa koricama", price: 4, description: "Luksuzni notes sa tvrdim koricama i elastičnom trakom.", image: "images/notes.jpg" }
+];
+
+
+    let cart = [];
+    let selectedProduct = null;
+
+    const shop = document.getElementById('shop');
+    const modal = document.getElementById('productModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalPrice = document.getElementById('modalPrice');
+    const modalImage = document.getElementById('modalImage');
+    const cartContainer = document.getElementById('cart');
+    const cartCount = document.getElementById('cart-count');
+    const totalPriceEl = document.getElementById('totalPrice');
+    const checkoutForm = document.getElementById('checkoutForm');
+
+    function renderShop() {
+      shop.innerHTML = '';
+      products.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <h3>${product.name}</h3>
+          <p>${product.price} KM</p>
+        `;
+        card.onclick = () => openModal(product);
+        shop.appendChild(card);
+      });
+    }
+
+    function openModal(product) {
+      selectedProduct = product;
+      modalTitle.textContent = product.name;
+      modalDescription.textContent = product.description;
+      modalPrice.textContent = product.price;
+      modalImage.src = product.image;
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    function addToCart() {
+      cart.push(selectedProduct);
+      updateCartDisplay();
+      closeModal();
+    }
+
+    function updateCartDisplay() {
+      cartCount.textContent = cart.length;
+      cartContainer.innerHTML = '';
+      let total = 0;
+      cart.forEach((item, index) => {
+        total += item.price;
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <h4>${item.name}</h4>
+          <p>${item.price} KM</p>
+          <button class="remove-btn" onclick="removeFromCart(${index})">Ukloni</button>
+        `;
+        cartContainer.appendChild(div);
+      });
+      totalPriceEl.textContent = `Ukupno: ${total} KM`;
+      totalPriceEl.classList.remove('hidden');
+      if (cart.length > 0) {
+        const checkoutButton = document.createElement('button');
+        checkoutButton.textContent = 'Potvrdi narudžbu';
+        checkoutButton.onclick = showCheckout;
+        cartContainer.appendChild(checkoutButton);
+      }
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartDisplay();
+    }
+
+    function showHome() {
+      shop.classList.remove('hidden');
+      cartContainer.classList.add('hidden');
+      checkoutForm.classList.add('hidden');
+      totalPriceEl.classList.add('hidden');
+    }
+
+    function showCart() {
+      shop.classList.add('hidden');
+      cartContainer.classList.remove('hidden');
+      updateCartDisplay();
+    }
+
+    function showCheckout() {
+      cartContainer.classList.add('hidden');
+      checkoutForm.classList.remove('hidden');
+    }
+
+    function processOrder() {
+      const address = document.getElementById('address').value;
+      const phone = document.getElementById('phone').value;
+      const cardNumber = document.getElementById('cardNumber').value;
+      const expiryDate = document.getElementById('expiryDate').value;
+      const cvv = document.getElementById('cvv').value;
+
+      if (!address || !phone || !cardNumber || !expiryDate || !cvv) {
+        alert("Molimo unesite sve podatke!");
+        return;
+      }
+
+      alert("Narudžba je potvrđena! Hvala na kupovini.");
+      showHome();
+      cart = []; // Clear the cart
+      updateCartDisplay();
+    }
+
+    renderShop();
+  </script>
+
+</body>
+</html>
